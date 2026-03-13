@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gómez PTSL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="bg-glow glow-a"></div>
+  <div class="bg-glow glow-b"></div>
+
+  <main class="app-shell">
+    <header class="topbar glass">
+      <div class="brand-block">
+        <div class="brand-icon">GP</div>
+        <div>
+          <p class="mini">Portal interno</p>
+          <h1>Gómez PTSL</h1>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <button class="nav-btn active" data-view-target="pendientesView">Pendientes</button>
+        <button class="nav-btn" data-view-target="hechosView">Hechos</button>
+        <button class="nav-btn" data-view-target="nuevoView">Nuevo siniestro</button>
+      </nav>
+    </header>
+
+    <section class="search-strip glass">
+      <input id="searchInput" class="input" placeholder="Buscar por expediente, póliza, asegurado o dirección">
+      <button id="refreshBtn" class="btn secondary">Actualizar</button>
+      <button id="clearClosedBtn" class="btn danger">Borrar todo cerrados</button>
+    </section>
+
+    <section id="pendientesView" class="view active-view">
+      <div class="section-head">
+        <div>
+          <p class="mini">Siniestros abiertos</p>
+          <h2>Pendientes</h2>
+        </div>
+        <div class="pill-stat" id="countPendientes">0 pendientes</div>
+      </div>
+      <div id="pendientesList" class="cards-grid"></div>
+    </section>
+
+    <section id="hechosView" class="view">
+      <div class="section-head">
+        <div>
+          <p class="mini">Histórico</p>
+          <h2>Hechos</h2>
+        </div>
+        <div class="pill-stat" id="countHechos">0 hechos</div>
+      </div>
+      <div id="hechosList" class="cards-grid"></div>
+    </section>
+
+    <section id="nuevoView" class="view">
+      <div class="hero-card glass mobile-first-card">
+        <div class="section-head mb-small">
+          <div>
+            <p class="mini">Paso principal</p>
+            <h2>Grabación y transcripción de apoyo</h2>
+          </div>
+        </div>
+
+        <div class="reminder-panel">
+          <h3>Recordatorios antes y durante la grabación</h3>
+          <div class="reminder-list">
+            <label><input type="checkbox" checked> Número de expediente y póliza</label>
+            <label><input type="checkbox" checked> Tipo y causa del siniestro</label>
+            <label><input type="checkbox" checked> Dirección, localización y año</label>
+            <label><input type="checkbox" checked> Superficie construida, contenido y continente</label>
+            <label><input type="checkbox" checked> Propuesta, tipo de rol, actividad, conceptos y códigos</label>
+            <label><input type="checkbox" checked> Otras circunstancias con resumen pericial corto</label>
+          </div>
+        </div>
+
+        <form id="createForm" class="create-form" autocomplete="off">
+          <div class="primary-grid">
+            <div class="field full">
+              <label>Nº expediente *</label>
+              <input name="numeroSiniestro" class="input large-input" required placeholder="Ej. 915.866.006">
+            </div>
+            <div class="field full">
+              <label>Transcripción de apoyo</label>
+              <textarea id="transcript" name="transcript" class="input textarea giant-textarea" placeholder="Aquí se irá escribiendo la transcripción automática si tu navegador lo permite. También puedes pegar o escribir el texto manualmente."></textarea>
+            </div>
+          </div>
+
+          <div class="record-row">
+            <button type="button" id="startRecording" class="btn primary big-btn">Grabar</button>
+            <button type="button" id="stopRecording" class="btn secondary big-btn" disabled>Detener</button>
+            <span id="recordingStatus" class="recording-status">Sin grabación</span>
+          </div>
+          <audio id="audioPreview" class="audio-preview hidden" controls></audio>
+
+          <div class="upload-box">
+            <label class="upload-label">Añadir fotos y archivos (PDF, Word, Excel...) · máx. 30</label>
+            <input id="photoInput" name="archivos" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="input">
+            <p class="muted small">Puedes seleccionar varias fotos o archivos de una vez, o añadir más tandas después. Se conservará todo hasta 30 archivos por siniestro.</p>
+            <div id="photoPreview" class="photo-grid"></div>
+          </div>
+
+          <details class="more-box" id="moreInfoBox">
+            <summary>Más información del siniestro</summary>
+            <div class="details-grid">
+              <div class="field"><label>Nº póliza</label><input name="numeroPoliza" class="input"></div>
+              <div class="field"><label>Ramo</label><input name="ramo" class="input" value="Combinado del Hogar"></div>
+              <div class="field"><label>Modalidad</label><input name="modalidad" class="input"></div>
+              <div class="field full"><label>Situación riesgo</label><input name="situacionRiesgo" class="input"></div>
+              <div class="field"><label>Asegurado</label><input name="asegurado" class="input"></div>
+              <div class="field"><label>Tipo siniestro</label><input name="tipoSiniestro" class="input" value="Fenómenos atmosféricos"></div>
+              <div class="field"><label>Causa siniestro</label><input name="causaSiniestro" class="input" value="Lluvia"></div>
+              <div class="field"><label>Fecha siniestro</label><input name="fechaSiniestro" class="input" placeholder="10/02/2026"></div>
+              <div class="field"><label>Actividad</label><input name="actividadRiesgo" class="input" value="Vivienda"></div>
+              <div class="field"><label>Régimen</label><input name="regimen" class="input" value="Propietario"></div>
+              <div class="field"><label>Tipo riesgo</label><input name="tipoRiesgo" class="input"></div>
+              <div class="field"><label>Uso</label><input name="uso" class="input" value="Principal"></div>
+              <div class="field"><label>Superficie construida (m²)</label><input name="superficieConstruida" id="surfaceInput" class="input"></div>
+              <div class="field"><label>Garaje / trastero / comunes (m²)</label><input name="garajeMetros" class="input" value="0"></div>
+              <div class="field"><label>Muro y vallas (ml)</label><input name="muroVallas" class="input" value="0"></div>
+              <div class="field"><label>Localización</label>
+                <select name="localizacion" class="input">
+                  <option value=""></option>
+                  <option>No, no se encuentra dentro de un núcleo</option>
+                  <option>Sí, se encuentra dentro de un núcleo</option>
+                </select>
+              </div>
+              <div class="field"><label>Año construcción</label><input name="anoConstruccion" class="input"></div>
+              <div class="field"><label>Materiales combustibles</label>
+                <select name="materialesCombustibles" class="input">
+                  <option value=""></option>
+                  <option>No</option>
+                  <option>Sí</option>
+                </select>
+              </div>
+              <div class="field full"><label>Protecciones</label><textarea name="protecciones" class="input textarea"></textarea></div>
+              <div class="field full"><label>Otras circunstancias / resumen pericial</label><textarea name="otrasCircunstancias" class="input textarea large-textarea"></textarea></div>
+
+              <div class="field"><label>Contenido</label><input name="contenidoSuma" id="contentInput" class="input" placeholder="20.714,84"></div>
+              <div class="field"><label>Continente</label><input name="continenteSuma" id="continenteInput" class="input" placeholder="86.348,16"></div>
+              <div class="field full calc-row">
+                <div class="calc-card"><span>Contenido - causa</span><strong id="contentCause">A valor real</strong></div>
+                <div class="calc-card"><span>Continente calculado (m² x 950)</span><strong id="continentCalc">0,00 €</strong></div>
+                <div class="calc-card"><span>Continente - causa</span><strong id="continentCause">NO CONSTA EN LA NOTA DEL PERITO</strong></div>
+              </div>
+
+              <div class="field"><label>Propuesta</label>
+                <select name="propuesta" class="input">
+                  <option value=""></option>
+                  <option>Informar</option>
+                  <option>Indemnizar</option>
+                  <option>Reparar</option>
+                </select>
+              </div>
+              <div class="field"><label>Tipo de rol</label>
+                <select name="tipoRol" class="input">
+                  <option value=""></option>
+                  <option>Asegurado</option>
+                  <option>Perjudicado</option>
+                  <option>Causante</option>
+                </select>
+              </div>
+              <div class="field"><label>Actividad</label>
+                <select name="actividad" id="actividadSelect" class="input"><option value=""></option></select>
+              </div>
+              <div class="field"><label>Conceptos</label>
+                <select name="conceptos" id="conceptosSelect" class="input"><option value=""></option></select>
+              </div>
+              <div class="field full"><label>Códigos</label><input name="codigos" class="input" placeholder="Solo si el perito los aporta"></div>
+              <div class="field full"><label>Observaciones breves</label><textarea name="observacionesBreves" class="input textarea"></textarea></div>
+            </div>
+          </details>
+
+          <div class="submit-row">
+            <button type="submit" class="btn primary">Guardar siniestro</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="editorDialog" class="editor-dialog">
+    <form method="dialog" class="editor-shell glass">
+      <div class="editor-top">
+        <div>
+          <p class="mini">Edición del expediente</p>
+          <h3 id="editorTitle">Siniestro</h3>
+        </div>
+        <button class="icon-close" type="button" id="closeEditor">✕</button>
+      </div>
+
+      <div class="editor-actions">
+        <button type="button" id="autofillBtn" class="btn primary">Rellenar mediante IA</button>
+        <button type="button" id="saveEditorBtn" class="btn secondary">Guardar cambios</button>
+        <button type="button" id="downloadReportBtn" class="btn secondary">Descargar informe</button>
+        <button type="button" id="downloadPhotosBtn" class="btn secondary">Descargar archivos</button>
+      </div>
+
+      <div class="editor-content">
+        <div class="editor-audio-card">
+          <h4>Audio y transcripción</h4>
+          <audio id="editorAudio" controls class="audio-preview"></audio>
+          <div class="field"><label>Transcripción</label><textarea id="editorTranscript" class="input textarea giant-textarea"></textarea></div>
+          <div class="upload-box">
+            <label class="upload-label">Añadir fotos y archivos al expediente</label>
+            <input id="editorPhotoInput" type="file" accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt" multiple class="input">
+            <div class="record-row">
+              <button type="button" id="uploadEditorPhotosBtn" class="btn secondary">Guardar archivos seleccionados</button>
+              <span id="editorPhotoStatus" class="recording-status">Sin fotos nuevas</span>
+            </div>
+            <p class="muted small">Puedes seleccionar varias fotos y archivos a la vez o añadir más tandas. El expediente guardará todo sin borrar lo anterior, hasta 30 archivos.</p>
+            <div id="editorPhotoPreview" class="photo-grid"></div>
+          </div>
+        </div>
+
+        <div class="editor-form-grid" id="editorFields"></div>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

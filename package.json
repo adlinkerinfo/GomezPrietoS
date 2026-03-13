@@ -1,0 +1,17 @@
+{
+  "name": "gomez-prieto-portal-vfinal-pro-archivos-login",
+  "version": "2.3.0",
+  "description": "Portal interno para peritos con login, fotos y archivos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "archiver": "^7.0.1",
+    "express-session": "^1.18.1"
+  }
+}
